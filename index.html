@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en" ng-app="Mediathek">
+<head>
+	<meta charset="UTF-8">
+	<title>Mediathek</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="bower_components/jquery/jquery.min.js"></script>
+	<script src="bower_components/angular/angular.min.js"></script>
+	<script src="bower_components/angular-localStorage/src/localStorage.js"></script>
+	<script src="bower_components/angular-cookies/angular-cookies.min.js"></script>
+	<script src="bower_components/moment/min/moment.min.js"></script>
+	<script src="bower_components/moment/min/lang/de.js"></script>
+	<script>
+		var App = angular.module('Mediathek', ['localStorage']);
+	</script>
+	<script src="directives.js"></script>
+	<script src="filter.js"></script>
+	<script src="services.js"></script>
+	<script src="controller.js"></script>
+
+
+	<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="style.css">
+
+	<script src="bower_components/jquery/jquery.min.js"></script>
+	<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
+</head>
+<body ng-controller="ctrl">
+	<div class="container head">
+		<div class="row">
+			<div class="col-lg-12">
+				<a id="add-btn" href="#" class="btn btn-primary pull-right" ng-click="add()" eat-click>Add Feed</a>
+				<h1>Hello Informations</h1>
+				<hr>
+			</div>
+		</div>
+	</div>
+	<div class="container body">
+		<div class="row" ng-controller="index">
+			<div class="col-lg-12" ng-show="feeds.length == 0">
+				<h2>EMPTY!</h2>
+				<p>In deinem Browser sind keine Feeds gespeichert. Bitte füge einen hinzu, in dem Du auf <a href="#" ng-click="add()" class="btn btn-primary" eat-click>Add Feed</a> klickst.</p>
+			</div>
+			<div class="col-lg-12" ng-style="{'width': 350 * feeds.length}">
+				<div class="panel" ng-repeat="feed in feeds" style="width:300px">
+					<div class="panel-heading">
+						<a href="#" class="pull-right" ng-click="drop($index)"><i class="icon-trash"></i></a>
+						<h2>{{feed.title}}</h2>
+					</div>
+					<i ng-show="feed.loading">loading...</i>
+					
+					<div class="item" ng-repeat="item in feed.items | filter:hidden">
+						<div class="inner">
+							<div class="" ng-hide="item.hidden">
+								<span class="label label-success" ng-hide="item.hidden">{{item.publishedDate | myTimeAgo}}</span>
+								<strong>{{item.title}}</strong>
+							</div>
+							<p ng-show="item.hidden">
+								<span class="label" ng-show="item.hidden">gesehen</span>
+								<strong>{{item.title}}</strong>
+							</p>
+							<p ng-hide="item.hidden">{{item.content}}</p>
+							
+							<p>
+								<small class="pull-right">{{item.publishedDate | myDate }}</small>
+								<a href="{{item.link}}" target="_blank" ng-class="{'btn btn-primary btn-small': !item.hidden}">Zur Sendung</a>
+								<a ng-click="hide()" class="btn btn-small btn-default" ng-hide="item.hidden">gesehen</a>
+							</p>
+						</div>
+						<hr>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Add Feed</h4>
+				</div>
+				<div class="modal-body">
+					<p>Also, Du musst einen Feed hinzufügen. Das ist ein Link auf eine XML Datei. Der Link muss mit <strong>http://</strong> beginnen.</p>
+					<p><input type="text" ng-model="title" class="form-control" autofocus placeholder="Titel des Feeds"></p>
+					<p><input type="text" ng-model="feed" class="form-control" placeholder="http://link.to/feed.rss"></p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" ng-click="save()">Add Feed</button>
+				</div>
+			</div><!-- /.modal-content -->
+		</div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+	
+</body>
+</html>
